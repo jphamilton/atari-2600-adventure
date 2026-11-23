@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/misc/">
+    <File Path=".gitignore" />
+    <File Path="adventure.asm" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Adventure.Core/Adventure.Core.csproj" />
     <Project Path="src/Adventure.Core.Tests/Adventure.Core.Tests.csproj" />
