@@ -7,7 +7,7 @@ A C# port of Warren Robinett's *Adventure* for the Atari 2600.
 dotnet run --project src/Adventure.Game
 ```
 
-The game targets .NET 9 and MonoGame DesktopGL. Tests:
+The game targets .NET 10 and MonoGame DesktopGL. Tests:
 
 ```text
 dotnet test src/Adventure.Core.Tests
