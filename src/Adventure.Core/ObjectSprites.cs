@@ -72,8 +72,8 @@ public static class ObjectSprites
         int playerX,
         int playerY)
     {
-        var markerLeft = playerX - 2;
-        var markerRight = playerX + 2;
+        var markerLeft = playerX;
+        var markerRight = playerX + 4;
         var markerBottom = playerY - 4;
         var markerTop = playerY;
 

@@ -188,7 +188,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
         var screenY = MapGeometry.ScreenRow(y - 1) * Scale;
         _sprites.Draw(
             _pixel,
-            new Rectangle(screenX - Scale * 2, screenY, Scale * 4, Scale * 4),
+            new Rectangle(screenX, screenY, Scale * 4, Scale * 4),
             color);
     }
 

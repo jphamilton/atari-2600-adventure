@@ -205,6 +205,38 @@ public class CarryTests
     }
 
     [Fact]
+    public void WalkingTheBlackMazePicksUpTheDot()
+    {
+        var world = new GameWorld(gameIndex: 1);
+        var dot = Object(world, ObjectIds.Dot);
+        world.Player.Room = dot.Room;
+        world.Player.X = 0x40;
+        world.Player.Y = 0x20;
+
+        for (var i = 0; i < 40; i++)
+        {
+            world.MovePlayer(Direction.Right | Direction.Down);
+            world.ResolveCarry(buttonDown: false);
+        }
+
+        Assert.Same(dot, world.Carried);
+    }
+
+    [Fact]
+    public void TheOpenCellShortOfTheDotDoesNotPickItUp()
+    {
+        var world = new GameWorld(gameIndex: 1);
+        var dot = Object(world, ObjectIds.Dot);
+        world.Player.Room = dot.Room;
+        world.Player.X = 0x4C;
+        world.Player.Y = 0x15;
+
+        world.ResolveCarry(buttonDown: false);
+
+        Assert.Null(world.Carried);
+    }
+
+    [Fact]
     public void ALitPixelAwayFromTheCoordinatePicksUpTheChalice()
     {
         var world = new GameWorld();
