@@ -14,11 +14,11 @@
   // Room name, a decimal id, or a hex id such as "0x11".
   // "Side Corridor" is 0x0C and 0x0D. "Top Entry" is 0x0E and 0x1D. Those two need the hex id.
   // x and y are optional. The usual castle spot is 80 (0x50) by 32 (0x20). Hex strings such as "0x50" also work.
-  "player": { "room": "Red Maze Bottom", "x": 80, "y": 32 },
+  "player": { "room": "Name Room", "x": 80, "y": 32 },
 
   // Places this object on the player. It cannot also set room, x, or y.
   // Names: sword, bridge, yellow_key, white_key, black_key, bat, dot, chalice, magnet.
-  //"carrying": "sword",
+   "carrying": "dot",
 
   // Pro difficulty. Dragons run from the sword.
   // "dragons_fear_sword": true,

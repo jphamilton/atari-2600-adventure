@@ -80,6 +80,68 @@ public class MazeTests
     }
 
     [Fact]
+    public void TheRedMazeBottomExitBouncesOffTheWallAbove()
+    {
+        var world = new GameWorld();
+        world.Player.Room = 0x19;
+        world.Player.X = 0x50;
+        world.Player.Y = MapGeometry.BottomEdge;
+
+        world.MovePlayer(Direction.Down, 1);
+
+        Assert.Equal(0x19, world.Player.Room);
+        Assert.Equal(MapGeometry.BottomEdge, world.Player.Y);
+        Assert.False(world.Blocks(0x19, world.Player.X, world.Player.Y));
+    }
+
+    [Fact]
+    public void HoldingDownAtTheRedMazeBottomStaysInTheRoom()
+    {
+        var world = new GameWorld();
+        world.Player.Room = 0x19;
+        world.Player.X = 0x50;
+        world.Player.Y = MapGeometry.BottomEdge;
+
+        for (var i = 0; i < 6; i++)
+        {
+            world.MovePlayer(Direction.Down);
+        }
+
+        Assert.Equal(0x19, world.Player.Room);
+        Assert.Equal(MapGeometry.BottomEdge, world.Player.Y);
+        Assert.False(world.Blocks(0x19, world.Player.X, world.Player.Y));
+    }
+
+    [Fact]
+    public void TheNameRoomExitBouncesOffTheWallBelow()
+    {
+        var world = new GameWorld();
+        world.Player.Room = 0x1E;
+        world.Player.X = 0x50;
+        world.Player.Y = MapGeometry.TopEdge - 1;
+
+        world.MovePlayer(Direction.Up, 1);
+
+        Assert.Equal(0x1E, world.Player.Room);
+        Assert.Equal(MapGeometry.TopEdge - 1, world.Player.Y);
+        Assert.False(world.Blocks(0x1E, world.Player.X, world.Player.Y));
+    }
+
+    [Fact]
+    public void TheRedMazeBottomStillEntersRedMaze1ThroughTheTop()
+    {
+        var world = new GameWorld();
+        world.Player.Room = 0x19;
+        world.Player.X = 0x40;
+        world.Player.Y = MapGeometry.TopEdge - 1;
+
+        world.MovePlayer(Direction.Up, 1);
+
+        Assert.Equal(0x17, world.Player.Room);
+        Assert.Equal(MapGeometry.WrappedFromTopY, world.Player.Y);
+    }
+
+    [Fact]
     public void EveryExitLandsInARealRoom()
     {
         Assert.Equal(31, RoomCatalog.Rooms.Count);

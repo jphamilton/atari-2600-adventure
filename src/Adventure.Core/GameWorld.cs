@@ -315,10 +315,22 @@ public sealed class GameWorld
                 return true;
             }
 
+            var room = Player.Room;
+            var x = Player.X;
+            var y = Player.Y;
             Player.X = nextX;
             Player.Y = nextY;
             if (CrossEdge())
             {
+                if (Blocks(Player.Room, Player.X, Player.Y) || ClosedGateBlocks(Player.Room, Player.X, Player.Y))
+                {
+                    Player.Room = room;
+                    Player.X = x;
+                    Player.Y = y;
+                    FollowCarried();
+                    return true;
+                }
+
                 FollowCarried();
                 return false;
             }
