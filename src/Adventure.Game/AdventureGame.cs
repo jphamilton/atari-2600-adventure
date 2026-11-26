@@ -9,26 +9,6 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
 {
     private const int Scale = 4;
 
-    private static readonly (byte R, byte G, byte B)[] Hues =
-    [
-        (0xEC, 0xEC, 0xEC),
-        (0xEC, 0xC4, 0x00),
-        (0xEC, 0x98, 0x00),
-        (0xEC, 0x6C, 0x00),
-        (0xEC, 0x40, 0x40),
-        (0xC8, 0x40, 0xC8),
-        (0x8C, 0x40, 0xEC),
-        (0x50, 0x50, 0xEC),
-        (0x28, 0x78, 0xEC),
-        (0x20, 0xA8, 0xEC),
-        (0x20, 0xC8, 0xB0),
-        (0x20, 0xC8, 0x40),
-        (0x40, 0xC8, 0x20),
-        (0x98, 0xC8, 0x20),
-        (0xC8, 0xB8, 0x20),
-        (0xEC, 0x98, 0x58),
-    ];
-
     private readonly GraphicsDeviceManager _graphics;
     private readonly GameWorld _world = GameWorld.AtTitle();
     private SpriteBatch _sprites = null!;
@@ -276,14 +256,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
 
     private static Color AtariColor(byte color)
     {
-        var luminance = color & 0x0F;
-        if (luminance == 0)
-        {
-            return Color.Black;
-        }
-
-        var hue = Hues[color >> 4];
-        var scale = luminance / 15f;
-        return new Color((byte)(hue.R * scale), (byte)(hue.G * scale), (byte)(hue.B * scale));
+        var (red, green, blue) = AtariPalette.Rgb(color);
+        return new Color(red, green, blue);
     }
 }

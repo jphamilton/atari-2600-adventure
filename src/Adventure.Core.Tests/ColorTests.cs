@@ -6,6 +6,17 @@ namespace Adventure.Core.Tests;
 public class ColorTests
 {
     [Fact]
+    public void TheYellowCastleIsTheNtscChartYellow()
+    {
+        var yellow = AtariPalette.Rgb(0x1A);
+
+        Assert.Equal((byte)0xD0, yellow.R);
+        Assert.Equal((byte)0xD0, yellow.G);
+        Assert.Equal((byte)0x50, yellow.B);
+        Assert.Equal(yellow, AtariPalette.Rgb(0x1B));
+    }
+
+    [Fact]
     public void TheChaliceColorStepsWithTheFrame()
     {
         var world = new GameWorld();
