@@ -198,6 +198,12 @@ public sealed class GameWorld
             AdvanceDragon(ObjectIds.RedDragon);
             AdvanceMagnet();
         }
+
+        FollowCarried();
+        if (ReferenceEquals(_carried, Find(ObjectIds.Bat)))
+        {
+            HoldCargo(Find(ObjectIds.Bat));
+        }
     }
 
     public void MovePlayer(Direction direction, int pixels)

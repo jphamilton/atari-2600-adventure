@@ -195,6 +195,27 @@ public class MazeTests
     }
 
     [Fact]
+    public void LeavingTheRightSideCorridorToTheLeftReturnsToTheMaze()
+    {
+        var corridor = RoomCatalog.Rooms[0x0C];
+        Assert.Equal(0x0B, corridor.Left);
+        Assert.Equal(0x0D, corridor.Right);
+
+        var world = new GameWorld(gameIndex: 1);
+        world.Player.Room = corridor.Id;
+        world.Player.X = 0x20;
+        world.Player.Y = 0x55;
+
+        for (var i = 0; i < 40 && world.Player.Room == corridor.Id; i++)
+        {
+            world.MovePlayer(Direction.Left, pixels: 1);
+        }
+
+        Assert.Equal(0x0B, world.Player.Room);
+        Assert.Equal(MapGeometry.WrappedFromLeftX, world.Player.X);
+    }
+
+    [Fact]
     public void Game1ResolvesTheLevelExitUnderTheTopAccess()
     {
         Assert.Equal(0x10, RoomCatalog.ResolveExit(0x80, gameIndex: 0));

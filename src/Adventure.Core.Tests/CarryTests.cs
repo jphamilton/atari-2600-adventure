@@ -131,6 +131,52 @@ public class CarryTests
     }
 
     [Fact]
+    public void ACarriedBatStaysWithAStationaryPlayer()
+    {
+        var world = new GameWorld(gameIndex: 1);
+        Object(world, ObjectIds.Sword).Room = 0x01;
+        var bat = PutOnPlayer(world, ObjectIds.Bat);
+        world.ResolveCarry(buttonDown: false);
+
+        for (var i = 0; i < 31; i++)
+        {
+            world.MovePlayer(Direction.None);
+            world.ResolveCarry(buttonDown: false);
+
+            Assert.Same(bat, world.Carried);
+            Assert.Equal(world.Player.Room, bat.Room);
+            Assert.Equal(world.Player.X, bat.X);
+            Assert.Equal(world.Player.Y, bat.Y);
+        }
+    }
+
+    [Fact]
+    public void ACarriedBridgeDoesNotDriftTowardTheMagnetWhileStanding()
+    {
+        var world = new GameWorld(gameIndex: 1);
+        var magnet = Object(world, ObjectIds.Magnet);
+        var bridge = Object(world, ObjectIds.Bridge);
+        world.Player.Room = magnet.Room;
+        world.Player.X = 0x40;
+        world.Player.Y = magnet.Y;
+        bridge.Room = magnet.Room;
+        bridge.X = world.Player.X;
+        bridge.Y = world.Player.Y;
+        world.ResolveCarry(buttonDown: false);
+
+        for (var i = 0; i < 31; i++)
+        {
+            world.MovePlayer(Direction.None);
+            world.ResolveCarry(buttonDown: false);
+
+            Assert.Same(bridge, world.Carried);
+            Assert.Equal(world.Player.Room, bridge.Room);
+            Assert.Equal(world.Player.X, bridge.X);
+            Assert.Equal(world.Player.Y, bridge.Y);
+        }
+    }
+
+    [Fact]
     public void ALitPixelAwayFromTheCoordinatePicksUpTheChalice()
     {
         var world = new GameWorld();
