@@ -12,4 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Adventure.Core\Adventure.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="scenario.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

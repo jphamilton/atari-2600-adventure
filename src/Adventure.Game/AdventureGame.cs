@@ -10,7 +10,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
     private const int Scale = 4;
 
     private readonly GraphicsDeviceManager _graphics;
-    private readonly GameWorld _world = GameWorld.AtTitle();
+    private readonly GameWorld _world;
     private SpriteBatch _sprites = null!;
     private Texture2D _pixel = null!;
     private TiaAudio _audio = null!;
@@ -27,6 +27,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
         TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 60.0);
         IsMouseVisible = true;
         Window.Title = "Adventure";
+        _world = ScenarioFile.LoadWorld();
     }
 
     protected override void LoadContent()

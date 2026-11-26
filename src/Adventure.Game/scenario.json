@@ -1,0 +1,53 @@
+{
+  // Loaded at startup from the working directory, or from the folder the game executable is in.
+  // A build copies this file next to the executable. Set ignore to true to start on the title screen.
+  // Enter and Tab reload this scenario. While ignore is false, Tab does not cycle games.
+  // Anything you leave out keeps that game's normal placement. Game 3 does not shuffle rooms while this file is loaded.
+  // Comments and trailing commas are allowed. An invalid file stops the game instead of starting a normal one.
+
+  // true starts on the title screen and leaves the rest of this file unused.
+  "ignore": true,
+
+  // 1, 2, or 3.
+  "game": 2,
+
+  // Room name, a decimal id, or a hex id such as "0x11".
+  // "Side Corridor" is 0x0C and 0x0D. "Top Entry" is 0x0E and 0x1D. Those two need the hex id.
+  // x and y are optional. The usual castle spot is 80 (0x50) by 32 (0x20). Hex strings such as "0x50" also work.
+  "player": { "room": "Red Maze Bottom", "x": 80, "y": 32 },
+
+  // Places this object on the player. It cannot also set room, x, or y.
+  // Names: sword, bridge, yellow_key, white_key, black_key, bat, dot, chalice, magnet.
+  //"carrying": "sword",
+
+  // Pro difficulty. Dragons run from the sword.
+  // "dragons_fear_sword": true,
+
+  // Pro difficulty. The roar is shorter.
+  // "short_dragon_roar": true,
+
+  "objects": {
+    // Dragons: "chase", "dead", or "eaten". "dead" leaves the corpse and it does not move.
+    // "red_dragon": { "state": "dead" },
+    // "yellow_dragon": { "room": "Black Castle", "x": 80, "y": 32, "state": "chase" },
+    // "green_dragon": { "state": "eaten" },
+
+    // "enabled": false freezes the bat, the magnet, or a dragon. The sprite stays, and it does not hunt or chase.
+    // "bat": { "enabled": false },
+    // "magnet": { "enabled": false },
+
+    // Portcullises: "open" or "closed".
+    // "yellow_portcullis": { "state": "open" },
+    // "white_portcullis": { "state": "closed" },
+    // "black_portcullis": { "state": "open" },
+
+    // Other objects only take room, x, and y. Omitted coordinates keep the game's normal ones.
+    // "chalice": { "room": "Yellow Castle", "x": 64, "y": 32 },
+    // "sword": { "room": "White Castle" },
+    // "bridge": { "room": "0x0D" },
+    // "yellow_key": { "room": "Yellow Castle" },
+    // "white_key": { "room": "White Castle" },
+    // "black_key": { "room": "Black Castle" },
+    // "dot": { "room": "Black Maze 3" }
+  }
+}

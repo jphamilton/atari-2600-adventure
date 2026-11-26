@@ -34,6 +34,8 @@ public sealed class GameWorld
     private WorldObject? _carried;
     private int _noiseType;
     private int _noiseCount;
+    private PlaytestSetup? _playtest;
+    private readonly HashSet<int> _disabled = [];
 
     public GameWorld(int gameIndex = 0, IReadOnlyList<Room>? rooms = null)
     {
@@ -53,6 +55,15 @@ public sealed class GameWorld
         var world = new GameWorld();
         world.Player.X = 0;
         world.LoadTitle();
+        return world;
+    }
+
+    public static GameWorld ForPlaytest(PlaytestSetup setup)
+    {
+        ArgumentNullException.ThrowIfNull(setup);
+        var world = new GameWorld(setup.GameIndex);
+        world._playtest = setup;
+        world.ApplyPlaytest();
         return world;
     }
 
@@ -116,6 +127,13 @@ public sealed class GameWorld
         IdleCount = 0;
         if (!Active)
         {
+            LoadTitle();
+            return;
+        }
+
+        if (_playtest is not null)
+        {
+            _noiseCount = 0;
             LoadTitle();
             return;
         }
@@ -730,6 +748,11 @@ public sealed class GameWorld
     private void LoadTitle()
     {
         _carried = null;
+        if (_playtest is not null)
+        {
+            GameIndex = _playtest.GameIndex;
+        }
+
         Player.Room = RoomCatalog.NumberRoom;
         Player.Y = 0;
         Active = true;
@@ -737,10 +760,71 @@ public sealed class GameWorld
         BatCargo = ObjectIds.None;
         _objects.Clear();
         _objects.AddRange(ObjectLayout.ForGame(GameIndex));
+        if (_playtest is not null)
+        {
+            ApplyPlaytest();
+            return;
+        }
+
         if (GameIndex == 2)
         {
             ScatterGame3();
         }
+    }
+
+    private void ApplyPlaytest()
+    {
+        var setup = _playtest ?? throw new InvalidOperationException("No playtest scenario is loaded.");
+        GameIndex = setup.GameIndex;
+        DragonsFearSword = setup.DragonsFearSword;
+        ShortDragonRoar = setup.ShortDragonRoar;
+        _disabled.Clear();
+        Player.Room = setup.PlayerRoom;
+        Player.X = setup.PlayerX;
+        Player.Y = setup.PlayerY;
+        Active = true;
+        foreach (var patch in setup.Objects)
+        {
+            var item = Find(patch.Id);
+            if (patch.Room is int room)
+            {
+                item.Room = room;
+            }
+
+            if (patch.X is int x)
+            {
+                item.X = x;
+            }
+
+            if (patch.Y is int y)
+            {
+                item.Y = y;
+            }
+
+            if (patch.State is int state)
+            {
+                item.State = state;
+            }
+
+            if (patch.Disabled)
+            {
+                _disabled.Add(patch.Id);
+            }
+        }
+
+        _carried = null;
+        _carryOffsetX = 0;
+        _carryOffsetY = 0;
+        if (setup.Carrying is not int carriedId)
+        {
+            return;
+        }
+
+        var carried = Find(carriedId);
+        carried.Room = Player.Room;
+        carried.X = Player.X;
+        carried.Y = Player.Y;
+        _carried = carried;
     }
 
     private void ScatterGame3()
@@ -842,6 +926,11 @@ public sealed class GameWorld
 
     private void AdvanceDragon(int id)
     {
+        if (_disabled.Contains(id))
+        {
+            return;
+        }
+
         var dragon = Find(id);
         if (dragon.State == DragonChase)
         {
@@ -906,6 +995,11 @@ public sealed class GameWorld
 
     private void AdvanceBat()
     {
+        if (_disabled.Contains(ObjectIds.Bat))
+        {
+            return;
+        }
+
         var bat = Find(ObjectIds.Bat);
         bat.State = (bat.State + 1) & 0xFF;
         if (bat.State == 8)
@@ -934,6 +1028,11 @@ public sealed class GameWorld
 
     private void AdvanceMagnet()
     {
+        if (_disabled.Contains(ObjectIds.Magnet))
+        {
+            return;
+        }
+
         var magnet = Find(ObjectIds.Magnet);
         var poleY = (magnet.Y - 8) & 0xFF;
         foreach (var id in MagnetQuarry)
