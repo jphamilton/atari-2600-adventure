@@ -364,8 +364,39 @@ public sealed class GameWorld
         }
 
         _carried.Room = Player.Room;
-        _carried.X = Player.X + _carryOffsetX;
-        _carried.Y = Player.Y + _carryOffsetY;
+        _carried.X = (Player.X + _carryOffsetX) & 0xFF;
+        _carried.Y = (Player.Y + _carryOffsetY) & 0xFF;
+        if (CarryEntersCastle(_carried))
+        {
+            return;
+        }
+
+        WrapRoaming(_carried);
+    }
+
+    private bool CarryEntersCastle(WorldObject item)
+    {
+        foreach (var link in GateLinks)
+        {
+            if (item.Room != link.EntryRoom || item.Y >= MapGeometry.BottomEdge)
+            {
+                continue;
+            }
+
+            var gate = Find(link.GateId);
+            if (gate.State == GateClosed)
+            {
+                continue;
+            }
+
+            item.Room = link.CastleRoom;
+            item.X = GateInteriorX;
+            item.Y = GateInteriorY;
+            gate.State = GateOpen;
+            return true;
+        }
+
+        return false;
     }
 
     private static void Nudge(WorldObject item, Direction direction)

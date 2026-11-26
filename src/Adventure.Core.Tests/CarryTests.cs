@@ -177,6 +177,34 @@ public class CarryTests
     }
 
     [Fact]
+    public void AKeyHeldBelowTheCastleExitDropsIntoTheNextRoom()
+    {
+        var world = new GameWorld();
+        var key = Object(world, ObjectIds.YellowKey);
+        world.Player.Room = RoomCatalog.YellowCastle;
+        world.Player.X = 0x50;
+        world.Player.Y = 0x0E;
+        key.Room = world.Player.Room;
+        key.X = world.Player.X;
+        key.Y = 0x0C;
+        world.ResolveCarry(buttonDown: false);
+
+        world.MovePlayer(Direction.None);
+
+        Assert.Same(key, world.Carried);
+        Assert.Equal(RoomCatalog.CorridorUnderYellowCastle, key.Room);
+        Assert.Equal(MapGeometry.WrappedFromBottomY, key.Y);
+        Assert.Equal(0x50, key.X);
+
+        world.ResolveCarry(buttonDown: true);
+
+        Assert.Null(world.Carried);
+        Assert.Equal(RoomCatalog.CorridorUnderYellowCastle, key.Room);
+        Assert.Equal(MapGeometry.WrappedFromBottomY, key.Y);
+        Assert.Equal(0x50, key.X);
+    }
+
+    [Fact]
     public void ALitPixelAwayFromTheCoordinatePicksUpTheChalice()
     {
         var world = new GameWorld();
