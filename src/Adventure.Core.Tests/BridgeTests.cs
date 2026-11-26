@@ -81,15 +81,15 @@ public class BridgeTests
 
     [Theory]
     [InlineData(0, 0, -1, 0)]
-    [InlineData(0, 0, -3, 0)]
+    [InlineData(0, 0, 5, 0)]
     [InlineData(0, 0, 1, 1)]
     [InlineData(0, 0, 1, 2)]
     [InlineData(24, 0, -1, 0)]
-    [InlineData(24, 0, -3, 0)]
+    [InlineData(24, 0, 5, 0)]
     [InlineData(24, 0, 1, 1)]
     [InlineData(24, 0, 1, 2)]
     [InlineData(4, 8, -1, 0)]
-    [InlineData(4, 8, -3, 0)]
+    [InlineData(4, 8, 5, 0)]
     [InlineData(4, 8, 1, 1)]
     [InlineData(4, 8, 1, 2)]
     public void BridgePixelsPickUpFromEverySide(int xOffset, int yDown, int playerXOffset, int playerYOffset)

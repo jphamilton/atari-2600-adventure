@@ -72,10 +72,11 @@ public static class ObjectSprites
         int playerX,
         int playerY)
     {
-        var markerLeft = playerX;
-        var markerRight = playerX + 4;
+        var markerLeft = playerX - MapGeometry.BallLeftOfCoordinate;
+        var markerRight = markerLeft + MapGeometry.BallWidth;
         var markerBottom = playerY - 4;
         var markerTop = playerY;
+        objectX += MapGeometry.SpriteLeft(pixelScale);
 
         for (var row = 0; row < graphic.Length; row++)
         {
@@ -104,6 +105,8 @@ public static class ObjectSprites
         int rightY,
         int rightScale)
     {
+        leftX += MapGeometry.SpriteLeft(leftScale);
+        rightX += MapGeometry.SpriteLeft(rightScale);
         for (var row = 0; row < left.Length; row++)
         {
             var bits = left[row];

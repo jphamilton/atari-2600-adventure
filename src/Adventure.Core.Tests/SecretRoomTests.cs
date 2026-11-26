@@ -31,7 +31,7 @@ public class SecretRoomTests
         world.MovePlayer(Direction.Right, 200);
 
         Assert.Equal(0x03, world.Player.Room);
-        Assert.Equal(0x95, world.Player.X);
+        Assert.Equal(0x92, world.Player.X);
 
         dot.Room = 0x03;
         world.MovePlayer(Direction.Right, 200);

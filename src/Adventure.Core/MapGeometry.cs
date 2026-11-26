@@ -44,7 +44,13 @@ public static class MapGeometry
         return (0x60 - scanline) / CellHeight + 1;
     }
 
-    public static int ColumnForX(int x) => x / CellWidth;
+    public const int BallLeftOfCoordinate = 2;
+
+    public const int BallWidth = 4;
+
+    public static int ColumnForX(int x) => x < 0 ? -1 : x / CellWidth;
+
+    public static int SpriteLeft(int pixelScale) => pixelScale >= CellWidth ? 0 : -1;
 
     public static int ScreenRow(int scanline) => ScanlineTop - scanline;
 

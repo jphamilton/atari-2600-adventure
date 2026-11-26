@@ -253,13 +253,13 @@ public sealed class GameWorld
             1 => _stick & (Direction.Up | Direction.Down),
             _ => _stick & (Direction.Left | Direction.Right),
         };
+        RestoreBall();
         if (allowed == Direction.None)
         {
             return;
         }
 
-        RestoreBall();
-        _stepBlocked = TryStep(allowed, PlayerStep);
+        _stepBlocked = StepAndCollide(allowed, PlayerStep);
     }
 
     private void SaveBall()
@@ -339,6 +339,61 @@ public sealed class GameWorld
         }
 
         return false;
+    }
+
+    private bool StepAndCollide(Direction direction, int pixels)
+    {
+        var dx = Axis(direction, horizontal: true);
+        var dy = Axis(direction, horizontal: false);
+        if (dx == 0 && dy == 0)
+        {
+            return false;
+        }
+
+        for (var step = 0; step < pixels; step++)
+        {
+            Player.X += dx;
+            Player.Y += dy;
+            if (CrossEdge())
+            {
+                break;
+            }
+        }
+
+        FollowCarried();
+        return Blocks(Player.Room, Player.X, Player.Y) || ClosedGateBlocks(Player.Room, Player.X, Player.Y);
+    }
+
+    private static int Axis(Direction direction, bool horizontal)
+    {
+        if (horizontal)
+        {
+            var dx = 0;
+            if (direction.HasFlag(Direction.Left))
+            {
+                dx--;
+            }
+
+            if (direction.HasFlag(Direction.Right))
+            {
+                dx++;
+            }
+
+            return dx;
+        }
+
+        var dy = 0;
+        if (direction.HasFlag(Direction.Up))
+        {
+            dy++;
+        }
+
+        if (direction.HasFlag(Direction.Down))
+        {
+            dy--;
+        }
+
+        return dy;
     }
 
     public void ResolveCarry(bool buttonDown)
@@ -465,28 +520,32 @@ public sealed class GameWorld
         }
 
         var room = _rooms[roomId];
-        if (room.LeftThinWall && x == MapGeometry.LeftThinX)
+        var left = x - MapGeometry.BallLeftOfCoordinate;
+        for (var pixel = left; pixel < left + MapGeometry.BallWidth; pixel++)
         {
-            return true;
-        }
-
-        if (room.RightThinWall && x == MapGeometry.RightThinX && !DotSharesRoom(roomId))
-        {
-            return true;
-        }
-
-        var column = MapGeometry.ColumnForX(x);
-        if (column < 0 || column >= MapGeometry.Columns)
-        {
-            return false;
-        }
-
-        for (var scanline = y - 4; scanline < y; scanline++)
-        {
-            var row = MapGeometry.RowForScanline(scanline);
-            if (row >= 0 && room.IsWall(row, column))
+            if (room.LeftThinWall && pixel == MapGeometry.LeftThinX - MapGeometry.BallLeftOfCoordinate)
             {
                 return true;
+            }
+
+            if (room.RightThinWall && pixel == MapGeometry.RightThinX - MapGeometry.BallLeftOfCoordinate && !DotSharesRoom(roomId))
+            {
+                return true;
+            }
+
+            var column = MapGeometry.ColumnForX(pixel);
+            if (column < 0 || column >= MapGeometry.Columns)
+            {
+                continue;
+            }
+
+            for (var scanline = y - 4; scanline < y; scanline++)
+            {
+                var row = MapGeometry.RowForScanline(scanline);
+                if (row >= 0 && room.IsWall(row, column))
+                {
+                    return true;
+                }
             }
         }
 

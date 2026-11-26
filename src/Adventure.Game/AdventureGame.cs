@@ -164,7 +164,12 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
                 ? ObjectSprites.Gate(item.State)
                 : ObjectSprites.For(item.Kind, item.State);
             var pixelScale = item.Kind == ObjectKind.Bridge ? 4 : 1;
-            DrawBitmap(graphic, item.X, item.Y, AtariColor(_world.DisplayColor(item.Color)), pixelScale);
+            DrawBitmap(
+                graphic,
+                item.X + MapGeometry.SpriteLeft(pixelScale),
+                item.Y,
+                AtariColor(_world.DisplayColor(item.Color)),
+                pixelScale);
         }
 
         if (room.Id == RoomCatalog.NumberRoom)
@@ -174,7 +179,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
 
         if (room.Id == 0x1E)
         {
-            DrawBitmap(ObjectSprites.Author, 0x50, 0x69, AtariColor(_world.DisplayColor(0xCB)));
+            DrawBitmap(ObjectSprites.Author, 0x50 + MapGeometry.SpriteLeft(1), 0x69, AtariColor(_world.DisplayColor(0xCB)));
         }
 
         DrawMarker(_world.Player.X, _world.Player.Y, AtariColor(room.Color));
@@ -185,7 +190,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
 
     private void DrawMarker(int x, int y, Color color)
     {
-        var screenX = x * Scale;
+        var screenX = (x - MapGeometry.BallLeftOfCoordinate) * Scale;
         var screenY = MapGeometry.ScreenRow(y - 1) * Scale;
         _sprites.Draw(
             _pixel,
@@ -251,7 +256,7 @@ public sealed class AdventureGame : Microsoft.Xna.Framework.Game
     {
         _sprites.Draw(
             _pixel,
-            new Rectangle(x * Scale, 0, Scale, MapGeometry.VisibleHeight * Scale),
+            new Rectangle((x - MapGeometry.BallLeftOfCoordinate) * Scale, 0, Scale, MapGeometry.VisibleHeight * Scale),
             color);
     }
 

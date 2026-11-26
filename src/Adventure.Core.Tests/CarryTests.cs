@@ -109,25 +109,23 @@ public class CarryTests
     public void HoldingADirectionOnThePickupPassNudgesTheObject()
     {
         var world = new GameWorld();
-        for (var i = 0; i < 80; i++)
-        {
-            world.MovePlayer(Direction.Left, pixels: 1);
-        }
-
+        world.Player.Y = 0x20;
         var sword = PutOnPlayer(world, ObjectIds.Sword);
+        sword.X = world.Player.X - 1;
         var x = world.Player.X;
+
         world.MovePlayer(Direction.Left);
         world.ResolveCarry(buttonDown: false);
 
         Assert.Same(sword, world.Carried);
-        Assert.Equal(x, world.Player.X);
-        Assert.Equal(x - GameWorld.PickupNudge, sword.X);
+        Assert.Equal(x - GameWorld.PlayerStep, world.Player.X);
+        Assert.Equal(x - 1 - GameWorld.PickupNudge, sword.X);
         Assert.True(world.Touches(sword));
 
         world.ResolveCarry(buttonDown: true);
 
         Assert.Same(sword, world.Carried);
-        Assert.Equal(x - GameWorld.PickupNudge * 2, sword.X);
+        Assert.Equal(x - 1 - GameWorld.PickupNudge * 2, sword.X);
     }
 
     [Fact]

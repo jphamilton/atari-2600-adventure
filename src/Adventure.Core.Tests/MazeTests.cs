@@ -62,6 +62,78 @@ public class MazeTests
     }
 
     [Fact]
+    public void TheYellowCastleCornerKeepsTheCartridgeStandoff()
+    {
+        var left = new GameWorld();
+        for (var i = 0; i < 90; i++)
+        {
+            left.MovePlayer(Direction.Left);
+        }
+
+        var freeLeft = new List<int>();
+        var overlappedLeft = false;
+        for (var i = 0; i < 3; i++)
+        {
+            left.MovePlayer(Direction.Left);
+            if (left.Blocks(left.Player.Room, left.Player.X, left.Player.Y))
+            {
+                overlappedLeft = true;
+            }
+            else
+            {
+                freeLeft.Add(left.Player.X);
+            }
+        }
+
+        Assert.True(overlappedLeft);
+        Assert.NotEmpty(freeLeft);
+        Assert.All(freeLeft, x => Assert.Equal(0x0B, x));
+
+        var down = new GameWorld();
+        down.Player.X = 0x28;
+        for (var i = 0; i < 30; i++)
+        {
+            down.MovePlayer(Direction.Down);
+        }
+
+        var freeDown = new List<int>();
+        var overlappedDown = false;
+        for (var i = 0; i < 3; i++)
+        {
+            down.MovePlayer(Direction.Down);
+            if (down.Blocks(down.Player.Room, down.Player.X, down.Player.Y))
+            {
+                overlappedDown = true;
+            }
+            else
+            {
+                freeDown.Add(down.Player.Y);
+            }
+        }
+
+        Assert.True(overlappedDown);
+        Assert.NotEmpty(freeDown);
+        Assert.All(freeDown, y => Assert.Equal(0x17, y));
+        Assert.Equal(RoomCatalog.YellowCastle, down.Player.Room);
+    }
+
+    [Fact]
+    public void AOnePixelWalkStopsFlushWithTheWall()
+    {
+        var world = new GameWorld();
+        world.Player.Y = 0x18;
+
+        for (var i = 0; i < 80; i++)
+        {
+            world.MovePlayer(Direction.Left, pixels: 1);
+        }
+
+        Assert.Equal(0x0A, world.Player.X);
+        Assert.False(world.Blocks(world.Player.Room, world.Player.X, world.Player.Y));
+        Assert.True(world.Blocks(world.Player.Room, world.Player.X - 1, world.Player.Y));
+    }
+
+    [Fact]
     public void WalkingIntoACastleWallDoesNotLeaveTheRoom()
     {
         var world = new GameWorld();
@@ -132,7 +204,7 @@ public class MazeTests
     {
         var world = new GameWorld();
         world.Player.Room = 0x19;
-        world.Player.X = 0x40;
+        world.Player.X = 0x44;
         world.Player.Y = MapGeometry.TopEdge - 1;
 
         world.MovePlayer(Direction.Up, 1);

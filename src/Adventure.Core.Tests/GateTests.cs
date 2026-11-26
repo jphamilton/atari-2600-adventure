@@ -72,7 +72,7 @@ public class GateTests
         Assert.Equal(GameWorld.GateEntryY, world.Player.Y);
         Assert.Equal(GameWorld.GateOpen, gate.State);
 
-        world.Player.X = 0x40;
+        world.Player.X = 0x50;
         world.Player.Y = MapGeometry.BottomEdge;
         world.MovePlayer(Direction.Down, pixels: 1);
 
