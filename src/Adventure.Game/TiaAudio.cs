@@ -104,12 +104,10 @@ public sealed class TiaAudio : IDisposable
                 break;
             case 6:
             case 10:
-                if (++_div31 >= 31)
-                {
-                    _div31 = 0;
-                    _output ^= 1;
-                }
-
+                // Period 31: thirteen clocks high, eighteen low. A toggle here
+                // would hold each level for 31 clocks and sound an octave low.
+                _output = _div31 < 13 ? 1 : 0;
+                _div31 = _div31 == 30 ? 0 : _div31 + 1;
                 break;
             case 7:
                 if (Poly5() != 0)
@@ -126,7 +124,9 @@ public sealed class TiaAudio : IDisposable
                 break;
             case 12:
             case 13:
-                if (++_div6 >= 6)
+                // These modes run from the CPU clock, a third of the 31.4 kHz
+                // clock, and the pure tone flips on every one of those clocks.
+                if (++_div6 >= 3)
                 {
                     _div6 = 0;
                     _output ^= 1;
@@ -134,15 +134,13 @@ public sealed class TiaAudio : IDisposable
 
                 break;
             case 14:
-                if (++_div93 >= 93)
-                {
-                    _div93 = 0;
-                    _output ^= 1;
-                }
-
+                // Same 13:18 wave as modes 6 and 10, each step held for three
+                // clocks of the 31.4 kHz clock.
+                _output = _div93 < 39 ? 1 : 0;
+                _div93 = _div93 == 92 ? 0 : _div93 + 1;
                 break;
             case 15:
-                if (++_div6 >= 6)
+                if (++_div6 >= 3)
                 {
                     _div6 = 0;
                     _output = Poly5();
